@@ -2,16 +2,19 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import Checkbox from "../components/Checkbox";
 import ErrorMessage from "../components/ErrorMessage";
+import ConfirmScreen from "./ConfirmScreen";
 
-export default function StartScreen({ onRegister }) {
+export default function StartScreen({ onGameStart }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
-  
+
   const [nameError, setNameError] = useState(null);
   const [emailError, setEmailError] = useState(null);
   const [phoneError, setPhoneError] = useState(null);
+
+  const [showConfirmScreen, setShowConfirmScreen] = useState(false);
 
   function validateName(input) {
     if (input.trim().length <= 1 || /\d/.test(input)) {
@@ -23,7 +26,7 @@ export default function StartScreen({ onRegister }) {
 
   function handleRegister() {
     if (!nameError && !emailError && !phoneError && isCheckboxChecked) {
-      onRegister();
+      setShowConfirmScreen(true);
     } else {
       Alert.alert("Error", "Please fix validation errors and check the box.");
     }
@@ -39,9 +42,17 @@ export default function StartScreen({ onRegister }) {
     setPhoneError(null);
   }
 
+  function handleEdit() {
+    setShowConfirmScreen(false);
+  }
+
+  function handleConfirm() {
+    setShowConfirmScreen(false);
+    onGameStart();
+  }
+
   return (
     <View style={styles.container}>
-      {/* Welcome Text */}
       <Text style={styles.welcomeText}>Welcome</Text>
 
       <View style={styles.card}>
@@ -93,6 +104,14 @@ export default function StartScreen({ onRegister }) {
           />
         </View>
       </View>
+
+      {/* ConfirmScreen*/}
+      <ConfirmScreen
+        visible={showConfirmScreen}
+        userInfo={{ name, email, phone }}
+        onEdit={handleEdit}
+        onConfirm={handleConfirm}
+      />
     </View>
   );
 }
