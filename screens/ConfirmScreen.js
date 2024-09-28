@@ -1,19 +1,13 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Button,
-  Modal,
-  StyleSheet,
-  SafeAreaView,
-} from "react-native";
+import { View, Text, Modal, StyleSheet, SafeAreaView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import CustomButton from "../components/Button";
 
 export default function ConfirmScreen({
-  visible,
+  visible = true,
   userInfo,
   onEdit,
-  onConfirm,
+  onGameStart,
 }) {
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
@@ -25,7 +19,6 @@ export default function ConfirmScreen({
           <View style={styles.card}>
             <Text style={styles.greetingText}>Hello {userInfo.name}</Text>
             
-        
             <Text style={styles.instructionText}>
               Here is the information you entered:
             </Text>
@@ -38,8 +31,15 @@ export default function ConfirmScreen({
             </Text>
 
             <View style={styles.buttonsRow}>
-              <Button title="Go back" onPress={onEdit} color="red" />
-              <Button title="Continue" onPress={onConfirm} color="blue" />
+              <CustomButton title="Go back" onPress={onEdit} color="red" />
+              <CustomButton
+                title="Continue"
+                onPress={() => {
+                  console.log("Continue button clicked");
+                  onGameStart();
+                }}
+                color="blue"
+              />
             </View>
           </View>
         </SafeAreaView>

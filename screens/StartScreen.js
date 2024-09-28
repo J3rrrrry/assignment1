@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
 import Checkbox from "../components/Checkbox";
 import ErrorMessage from "../components/ErrorMessage";
 import ConfirmScreen from "./ConfirmScreen";
+import CustomButton from "../components/Button";
 
 export default function StartScreen({ onGameStart }) {
   const [name, setName] = useState("");
@@ -127,8 +128,8 @@ export default function StartScreen({ onGameStart }) {
         />
 
         <View style={styles.buttonsRow}>
-          <Button title="Reset" onPress={resetForm} color="red" />
-          <Button
+          <CustomButton title="Reset" onPress={resetForm} color="red" />
+          <CustomButton
             title="Register"
             onPress={handleRegister}
             disabled={!isCheckboxChecked}
