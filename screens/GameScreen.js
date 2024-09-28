@@ -20,6 +20,7 @@ export default function GameScreen({ phone, onRestart }) {
   const [gameOverMessage, setGameOverMessage] = useState("");
   const [hintUsed, setHintUsed] = useState(false);
   const [hintMessage, setHintMessage] = useState("");
+  const [gameOverReason, setGameOverReason] = useState("");
 
   useEffect(() => {
     if (isGameStarted && timer > 0) {
@@ -28,7 +29,7 @@ export default function GameScreen({ phone, onRestart }) {
       }, 1000);
       return () => clearInterval(interval);
     } else if (timer === 0) {
-      handleGameOver("Time's up! You ran out of time.");
+      handleGameOver("Time's up! You ran out of time.", "Time limit exceeded");
     }
   }, [isGameStarted, timer]);
 
@@ -41,6 +42,7 @@ export default function GameScreen({ phone, onRestart }) {
     setGameOverMessage("");
     setHintUsed(false);
     setHintMessage("");
+    setGameOverReason("");
     onRestart();
   }
 
@@ -52,11 +54,11 @@ export default function GameScreen({ phone, onRestart }) {
     }
 
     if (guess === chosenNumber) {
-      handleGameOver(`Congratulations! You guessed the correct number in ${4 - attemptsLeft + 1} attempts.`);
+      handleGameOver(`Congratulations! You guessed the correct number in ${4 - attemptsLeft + 1} attempts.`, "Correct guess");
     } else {
       setAttemptsLeft(prev => prev - 1);
       if (attemptsLeft === 1) {
-        handleGameOver("You ran out of attempts!");
+        handleGameOver("You ran out of attempts!", "Attempts exhausted");
       } else {
         Alert.alert(
           "Incorrect guess",
@@ -67,8 +69,9 @@ export default function GameScreen({ phone, onRestart }) {
     }
   }
 
-  function handleGameOver(message) {
+  function handleGameOver(message, reason) {
     setGameOverMessage(message);
+    setGameOverReason(reason);
     setIsGameStarted(false);
   }
 
@@ -89,13 +92,15 @@ export default function GameScreen({ phone, onRestart }) {
         gameOverMessage ? (
           <View style={styles.gameOverContainer}>
             <Text style={styles.gameOverText}>{gameOverMessage}</Text>
+            <Text style={styles.gameOverReasonText}>Reason: {gameOverReason}</Text>
+            {hintUsed && <Text style={styles.hintText}>Hint was used.</Text>}
             {gameOverMessage.includes("Congratulations") && (
               <Image
                 source={{ uri: `https://picsum.photos/id/${chosenNumber}/100/100` }}
                 style={styles.successImage}
               />
             )}
-            <CustomButton title="Restart" onPress={handleRestart} color="red" />
+            <CustomButton title="New Game" onPress={handleRestart} color="green" />
           </View>
         ) : (
           <View>
@@ -167,6 +172,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "red",
     marginBottom: 20,
+    textAlign: "center",
+  },
+  gameOverReasonText: {
+    fontSize: 18,
+    color: "gray",
+    marginBottom: 10,
     textAlign: "center",
   },
   successImage: {
