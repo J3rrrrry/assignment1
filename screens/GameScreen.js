@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, StyleSheet, Alert, Image } from "react-native";
 import CustomButton from "../components/Button";
 
 function generateNumber(lastDigit) {
@@ -14,9 +14,10 @@ export default function GameScreen({ phone, onRestart }) {
   const lastDigit = parseInt(phone.slice(-1), 10);
   const [chosenNumber, setChosenNumber] = useState(generateNumber(lastDigit));
   const [isGameStarted, setIsGameStarted] = useState(false);
-  const [timer, setTimer] = useState(60);
-  const [attemptsLeft, setAttemptsLeft] = useState(4);
-  const [userGuess, setUserGuess] = useState("");
+  const [timer, setTimer] = useState(60); 
+  const [attemptsLeft, setAttemptsLeft] = useState(4); 
+  const [userGuess, setUserGuess] = useState(""); 
+  const [gameOverMessage, setGameOverMessage] = useState(""); 
 
   useEffect(() => {
     if (isGameStarted && timer > 0) {
@@ -25,8 +26,7 @@ export default function GameScreen({ phone, onRestart }) {
       }, 1000);
       return () => clearInterval(interval);
     } else if (timer === 0) {
-      Alert.alert("Time's up!", "You ran out of time.");
-      handleGameOver();
+      handleGameOver("Time's up! You ran out of time.");
     }
   }, [isGameStarted, timer]);
 
@@ -36,6 +36,7 @@ export default function GameScreen({ phone, onRestart }) {
     setTimer(60);
     setAttemptsLeft(4);
     setUserGuess("");
+    setGameOverMessage("");
     onRestart();
   }
 
@@ -47,37 +48,49 @@ export default function GameScreen({ phone, onRestart }) {
     }
 
     if (guess === chosenNumber) {
-      Alert.alert("Congratulations!", "You guessed the correct number.");
-      handleGameOver();
+      handleGameOver(`Congratulations! You guessed the correct number in ${4 - attemptsLeft + 1} attempts.`);
     } else {
       setAttemptsLeft(prev => prev - 1);
       if (attemptsLeft === 1) {
-        handleGameOver();
+        handleGameOver("You ran out of attempts!");
       } else {
         Alert.alert(
           "Incorrect guess",
           guess > chosenNumber ? "Try a smaller number." : "Try a larger number."
         );
-        setUserGuess("");
+        setUserGuess(""); 
       }
     }
   }
 
-  function handleGameOver() {
-    Alert.alert("Game Over", "Restart to try again.");
-    setIsGameStarted(false);
+  function handleGameOver(message) {
+    setGameOverMessage(message); 
+    setIsGameStarted(false); 
   }
 
   return (
     <View style={styles.container}>
       {!isGameStarted ? (
-        <View>
-          <Text style={styles.infoText}>
-            A number has been chosen. It is a multiple of {lastDigit}.
-            You have 60 seconds and 4 attempts to guess the correct number.
-          </Text>
-          <CustomButton title="Start" onPress={() => setIsGameStarted(true)} />
-        </View>
+        gameOverMessage ? (
+          <View style={styles.gameOverContainer}>
+            <Text style={styles.gameOverText}>{gameOverMessage}</Text>
+            {gameOverMessage.includes("Congratulations") && (
+              <Image
+                source={{ uri: `https://picsum.photos/id/${chosenNumber}/100/100` }}
+                style={styles.successImage}
+              />
+            )}
+            <CustomButton title="Restart" onPress={handleRestart} color="red" />
+          </View>
+        ) : (
+          <View>
+            <Text style={styles.infoText}>
+              A number has been chosen. It is a multiple of {lastDigit}.
+              You have 60 seconds and 4 attempts to guess the correct number.
+            </Text>
+            <CustomButton title="Start" onPress={() => setIsGameStarted(true)} />
+          </View>
+        )
       ) : (
         <View>
           <Text style={styles.infoText}>Time left: {timer} seconds</Text>
@@ -92,7 +105,6 @@ export default function GameScreen({ phone, onRestart }) {
           <CustomButton title="Submit guess" onPress={handleGuessSubmit} />
         </View>
       )}
-      <CustomButton title="Restart" onPress={handleRestart} color="red" />
     </View>
   );
 }
@@ -116,5 +128,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: "80%",
     textAlign: "center",
+  },
+  gameOverContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  gameOverText: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "red",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  successImage: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
   },
 });
