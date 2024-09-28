@@ -14,10 +14,12 @@ export default function GameScreen({ phone, onRestart }) {
   const lastDigit = parseInt(phone.slice(-1), 10);
   const [chosenNumber, setChosenNumber] = useState(generateNumber(lastDigit));
   const [isGameStarted, setIsGameStarted] = useState(false);
-  const [timer, setTimer] = useState(60); 
-  const [attemptsLeft, setAttemptsLeft] = useState(4); 
-  const [userGuess, setUserGuess] = useState(""); 
-  const [gameOverMessage, setGameOverMessage] = useState(""); 
+  const [timer, setTimer] = useState(60);
+  const [attemptsLeft, setAttemptsLeft] = useState(4);
+  const [userGuess, setUserGuess] = useState("");
+  const [gameOverMessage, setGameOverMessage] = useState("");
+  const [hintUsed, setHintUsed] = useState(false);
+  const [hintMessage, setHintMessage] = useState("");
 
   useEffect(() => {
     if (isGameStarted && timer > 0) {
@@ -37,6 +39,8 @@ export default function GameScreen({ phone, onRestart }) {
     setAttemptsLeft(4);
     setUserGuess("");
     setGameOverMessage("");
+    setHintUsed(false);
+    setHintMessage("");
     onRestart();
   }
 
@@ -58,14 +62,25 @@ export default function GameScreen({ phone, onRestart }) {
           "Incorrect guess",
           guess > chosenNumber ? "Try a smaller number." : "Try a larger number."
         );
-        setUserGuess(""); 
+        setUserGuess("");
       }
     }
   }
 
   function handleGameOver(message) {
-    setGameOverMessage(message); 
-    setIsGameStarted(false); 
+    setGameOverMessage(message);
+    setIsGameStarted(false);
+  }
+
+  function useHint() {
+    if (!hintUsed) {
+      if (chosenNumber > 50) {
+        setHintMessage("The number is greater than 50.");
+      } else {
+        setHintMessage("The number is less than or equal to 50.");
+      }
+      setHintUsed(true);
+    }
   }
 
   return (
@@ -95,6 +110,7 @@ export default function GameScreen({ phone, onRestart }) {
         <View>
           <Text style={styles.infoText}>Time left: {timer} seconds</Text>
           <Text style={styles.infoText}>Attempts left: {attemptsLeft}</Text>
+          {hintMessage ? <Text style={styles.hintText}>{hintMessage}</Text> : null}
           <TextInput
             style={styles.input}
             placeholder="Enter your guess"
@@ -103,6 +119,12 @@ export default function GameScreen({ phone, onRestart }) {
             onChangeText={setUserGuess}
           />
           <CustomButton title="Submit guess" onPress={handleGuessSubmit} />
+          <CustomButton
+            title="Use a hint"
+            onPress={useHint}
+            disabled={hintUsed}
+            color="orange"
+          />
         </View>
       )}
     </View>
@@ -127,6 +149,13 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     width: "80%",
+    textAlign: "center",
+  },
+  hintText: {
+    fontSize: 16,
+    fontStyle: "italic",
+    marginBottom: 10,
+    color: "blue",
     textAlign: "center",
   },
   gameOverContainer: {
