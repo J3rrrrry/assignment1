@@ -16,6 +16,9 @@ export default function StartScreen({ onGameStart }) {
 
   const [showConfirmScreen, setShowConfirmScreen] = useState(false);
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRegex = /^\d{9}[2-9]$/;
+
   function validateName(input) {
     if (input.trim().length <= 1 || /\d/.test(input)) {
       setNameError("Please enter a valid name");
@@ -24,11 +27,34 @@ export default function StartScreen({ onGameStart }) {
     }
   }
 
+  function validateEmail(input) {
+    if (!emailRegex.test(input)) {
+      setEmailError("Please enter a valid email address");
+    } else {
+      setEmailError(null);
+    }
+  }
+
+  function validatePhone(input) {
+    if (!phoneRegex.test(input)) {
+      setPhoneError(
+        "Phone number must be 10 digits and the last digit cannot be 0 or 1"
+      );
+    } else {
+      setPhoneError(null);
+    }
+  }
+
   function handleRegister() {
+    if (!name || !email || !phone || !isCheckboxChecked) {
+      Alert.alert("Error", "Please fill all fields and check the box.");
+      return;
+    }
+
     if (!nameError && !emailError && !phoneError && isCheckboxChecked) {
       setShowConfirmScreen(true);
     } else {
-      Alert.alert("Error", "Please fix validation errors and check the box.");
+      Alert.alert("Error", "Please fix validation errors.");
     }
   }
 
@@ -72,17 +98,23 @@ export default function StartScreen({ onGameStart }) {
         <TextInput
           style={styles.input}
           value={email}
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={(text) => {
+            setEmail(text);
+            validateEmail(text);
+          }}
           placeholder="Enter your email"
           keyboardType="email-address"
         />
         {emailError && <ErrorMessage message={emailError} />}
 
-        <Text style={styles.label}>Phone Number:</Text>
+        <Text style={styles.label}>Phone Number</Text>
         <TextInput
           style={styles.input}
           value={phone}
-          onChangeText={(text) => setPhone(text)}
+          onChangeText={(text) => {
+            setPhone(text);
+            validatePhone(text);
+          }}
           placeholder="Enter your phone"
           keyboardType="numeric"
         />
@@ -105,7 +137,7 @@ export default function StartScreen({ onGameStart }) {
         </View>
       </View>
 
-      {/* ConfirmScreen*/}
+      {/* ConfirmScreen */}
       <ConfirmScreen
         visible={showConfirmScreen}
         userInfo={{ name, email, phone }}
