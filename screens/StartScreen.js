@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
 import Checkbox from "../components/Checkbox";
 import ErrorMessage from "../components/ErrorMessage";
-import ConfirmScreen from "./ConfirmScreen";
 import CustomButton from "../components/Button";
 
-export default function StartScreen({ onGameStart }) {
+export default function StartScreen({ onRegister }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -14,8 +13,6 @@ export default function StartScreen({ onGameStart }) {
   const [nameError, setNameError] = useState(null);
   const [emailError, setEmailError] = useState(null);
   const [phoneError, setPhoneError] = useState(null);
-
-  const [showConfirmScreen, setShowConfirmScreen] = useState(false);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const phoneRegex = /^\d{9}[2-9]$/;
@@ -53,7 +50,7 @@ export default function StartScreen({ onGameStart }) {
     }
 
     if (!nameError && !emailError && !phoneError && isCheckboxChecked) {
-      setShowConfirmScreen(true);
+      onRegister({ name, email, phone });
     } else {
       Alert.alert("Error", "Please fix validation errors.");
     }
@@ -67,15 +64,6 @@ export default function StartScreen({ onGameStart }) {
     setNameError(null);
     setEmailError(null);
     setPhoneError(null);
-  }
-
-  function handleEdit() {
-    setShowConfirmScreen(false);
-  }
-
-  function handleConfirm() {
-    setShowConfirmScreen(false);
-    onGameStart();
   }
 
   return (
@@ -137,14 +125,6 @@ export default function StartScreen({ onGameStart }) {
           />
         </View>
       </View>
-
-      {/* ConfirmScreen */}
-      <ConfirmScreen
-        visible={showConfirmScreen}
-        userInfo={{ name, email, phone }}
-        onEdit={handleEdit}
-        onConfirm={handleConfirm}
-      />
     </View>
   );
 }

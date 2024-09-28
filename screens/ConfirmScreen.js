@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Modal, StyleSheet, SafeAreaView } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import CustomButton from "../components/Button";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function ConfirmScreen({
   visible = true,
@@ -35,8 +35,9 @@ export default function ConfirmScreen({
               <CustomButton
                 title="Continue"
                 onPress={() => {
-                  console.log("Continue button clicked");
-                  onGameStart();
+                  if (typeof onGameStart === 'function') {
+                    onGameStart();
+                  }
                 }}
                 color="blue"
               />
