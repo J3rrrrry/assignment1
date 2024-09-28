@@ -1,4 +1,4 @@
-import React, { useState } from "react";  
+import React, { useState } from "react";
 import { StyleSheet, SafeAreaView } from "react-native";
 import StartScreen from "./screens/StartScreen";
 import ConfirmScreen from "./screens/ConfirmScreen";
@@ -33,7 +33,13 @@ export default function App() {
       />
     );
   } else if (currentScreen === "game") {
-    content = <GameScreen phone={userInfo.phone} onRestart={handleRestart} />;
+    content = (
+      <GameScreen 
+        phone={userInfo.phone} 
+        onRestart={handleRestart}
+        onBackToStart={handleRestart}
+      />
+    );
   }
 
   return (

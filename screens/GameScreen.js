@@ -10,7 +10,7 @@ function generateNumber(lastDigit) {
   return multiples[Math.floor(Math.random() * multiples.length)];
 }
 
-export default function GameScreen({ phone, onRestart }) {
+export default function GameScreen({ phone, onRestart, onBackToStart }) {
   const lastDigit = parseInt(phone.slice(-1), 10);
   const [chosenNumber, setChosenNumber] = useState(generateNumber(lastDigit));
   const [isGameStarted, setIsGameStarted] = useState(false);
@@ -33,7 +33,13 @@ export default function GameScreen({ phone, onRestart }) {
     }
   }, [isGameStarted, timer]);
 
+  // Restart the game by taking the user back to the start screen and resetting all data
   function handleRestart() {
+    onBackToStart(); // This will take the user back to the StartScreen
+  }
+
+  // Generate a new number and start a new game
+  function handleNewGame() {
     setChosenNumber(generateNumber(lastDigit));
     setIsGameStarted(false);
     setTimer(60);
@@ -43,7 +49,7 @@ export default function GameScreen({ phone, onRestart }) {
     setHintUsed(false);
     setHintMessage("");
     setGameOverReason("");
-    onRestart();
+    setIsGameStarted(true);
   }
 
   function handleGuessSubmit() {
@@ -100,7 +106,7 @@ export default function GameScreen({ phone, onRestart }) {
                 style={styles.successImage}
               />
             )}
-            <CustomButton title="New Game" onPress={handleRestart} color="green" />
+            <CustomButton title="New Game" onPress={handleNewGame} color="green" />
           </View>
         ) : (
           <View>
@@ -130,6 +136,8 @@ export default function GameScreen({ phone, onRestart }) {
             disabled={hintUsed}
             color="orange"
           />
+          {/* Restart button on top right corner */}
+          <CustomButton title="Restart" onPress={handleRestart} color="red" />
         </View>
       )}
     </View>
