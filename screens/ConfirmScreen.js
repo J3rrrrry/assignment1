@@ -12,7 +12,7 @@ export default function ConfirmScreen({
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
       <LinearGradient
-        colors={["#add8e6", "#87CEFA", "#00BFFF"]}
+        colors={["rgba(173, 216, 230, 0.8)", "rgba(135, 206, 250, 0.8)", "rgba(0, 191, 255, 0.8)"]}
         style={styles.gradientBackground}
       >
         <SafeAreaView style={styles.modalContainer}>

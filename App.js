@@ -7,18 +7,20 @@ import GameScreen from "./screens/GameScreen";
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState("start");
   const [userInfo, setUserInfo] = useState({ name: "", email: "", phone: "" });
+  const [isConfirmVisible, setConfirmVisible] = useState(false);
 
   function handleGameStart() {
+    setConfirmVisible(false);
     setCurrentScreen("game");
   }
 
   function handleRegister(user) {
     setUserInfo(user);
-    setCurrentScreen("confirm");
+    setConfirmVisible(true);
   }
 
   function handleEdit() {
-    setCurrentScreen("start");
+    setConfirmVisible(false);
   }
 
   function handleRestart() {
@@ -29,14 +31,6 @@ export default function App() {
   let content;
   if (currentScreen === "start") {
     content = <StartScreen onRegister={handleRegister} initialValues={userInfo} />;
-  } else if (currentScreen === "confirm") {
-    content = (
-      <ConfirmScreen 
-        userInfo={userInfo} 
-        onEdit={handleEdit} 
-        onGameStart={handleGameStart}
-      />
-    );
   } else if (currentScreen === "game") {
     content = (
       <GameScreen 
@@ -50,6 +44,14 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       {content}
+      {isConfirmVisible && (
+        <ConfirmScreen 
+          userInfo={userInfo} 
+          visible={isConfirmVisible} 
+          onEdit={handleEdit} 
+          onGameStart={handleGameStart}
+        />
+      )}
     </SafeAreaView>
   );
 }
