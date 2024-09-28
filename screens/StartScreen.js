@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  Alert,
-} from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import Checkbox from "../components/Checkbox";
 import ErrorMessage from "../components/ErrorMessage";
 
@@ -15,34 +8,16 @@ export default function StartScreen({ onRegister }) {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
-
+  
   const [nameError, setNameError] = useState(null);
   const [emailError, setEmailError] = useState(null);
   const [phoneError, setPhoneError] = useState(null);
 
   function validateName(input) {
     if (input.trim().length <= 1 || /\d/.test(input)) {
-      setNameError("Invalid name: Should be non-numeric and longer than 1 character.");
+      setNameError("Please enter a valid name");
     } else {
       setNameError(null);
-    }
-  }
-
-  function validateEmail(input) {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(input)) {
-      setEmailError("Invalid email format.");
-    } else {
-      setEmailError(null);
-    }
-  }
-
-  function validatePhone(input) {
-    const phonePattern = /^\d{9}[2-9]$/; // 10 digits, last one not 0 or 1
-    if (!phonePattern.test(input)) {
-      setPhoneError("Phone must be 10 digits, last digit cannot be 0 or 1.");
-    } else {
-      setPhoneError(null);
     }
   }
 
@@ -66,6 +41,9 @@ export default function StartScreen({ onRegister }) {
 
   return (
     <View style={styles.container}>
+      {/* Welcome Text */}
+      <Text style={styles.welcomeText}>Welcome</Text>
+
       <View style={styles.card}>
         <Text style={styles.label}>Name</Text>
         <TextInput
@@ -79,44 +57,39 @@ export default function StartScreen({ onRegister }) {
         />
         {nameError && <ErrorMessage message={nameError} />}
 
-        <Text style={styles.label}>Email</Text>
+        <Text style={styles.label}>Email address</Text>
         <TextInput
           style={styles.input}
           value={email}
-          onChangeText={(text) => {
-            setEmail(text);
-            validateEmail(text);
-          }}
+          onChangeText={(text) => setEmail(text)}
           placeholder="Enter your email"
           keyboardType="email-address"
         />
         {emailError && <ErrorMessage message={emailError} />}
 
-        <Text style={styles.label}>Phone</Text>
+        <Text style={styles.label}>Phone Number:</Text>
         <TextInput
           style={styles.input}
           value={phone}
-          onChangeText={(text) => {
-            setPhone(text);
-            validatePhone(text);
-          }}
+          onChangeText={(text) => setPhone(text)}
           placeholder="Enter your phone"
           keyboardType="numeric"
         />
         {phoneError && <ErrorMessage message={phoneError} />}
 
         <Checkbox
-          label="I agree to the terms and conditions"
+          label="I am not a robot"
           isChecked={isCheckboxChecked}
-          onCheck={() => setIsCheckboxChecked((prev) => !prev)}
+          onCheck={() => setIsCheckboxChecked(!isCheckboxChecked)}
         />
 
         <View style={styles.buttonsRow}>
-          <Button title="Reset" onPress={resetForm} />
+          <Button title="Reset" onPress={resetForm} color="red" />
           <Button
             title="Register"
             onPress={handleRegister}
             disabled={!isCheckboxChecked}
+            color="blue"
           />
         </View>
       </View>
@@ -130,9 +103,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+    backgroundColor: "#add8e6",
+  },
+  welcomeText: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "darkblue",
+    marginBottom: 20,
   },
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: "#d3d3d3",
     padding: 20,
     borderRadius: 10,
     shadowColor: "#000",
@@ -144,14 +124,14 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
+    color: "purple",
     marginBottom: 5,
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
+    borderBottomWidth: 2,
+    borderBottomColor: "purple",
     padding: 10,
     marginBottom: 10,
-    borderRadius: 5,
   },
   buttonsRow: {
     flexDirection: "row",
