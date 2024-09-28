@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, StyleSheet, Alert, Image } from "react-native";
+import { View, Text, TextInput, StyleSheet, Image } from "react-native";
 import CustomButton from "../components/Button";
 import Card from "../components/Card";
 import { LinearGradient } from "expo-linear-gradient";
@@ -21,9 +21,11 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
   const [userGuess, setUserGuess] = useState("");
   const [hintUsed, setHintUsed] = useState(false);
   const [hintMessage, setHintMessage] = useState("");
-  const [gameOver, setGameOver] = useState(false);
+  const [gameOver, setGameOver] = useState(false); // Track game over state
   const [gameResultMessage, setGameResultMessage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [showFeedbackCard, setShowFeedbackCard] = useState(false);
 
   useEffect(() => {
     if (isGameStarted && timer > 0) {
@@ -45,7 +47,8 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
 
     const guess = parseInt(userGuess, 10);
     if (isNaN(guess) || guess < 1 || guess > 100) {
-      Alert.alert("Invalid guess", "Please enter a number between 1 and 100.");
+      setFeedbackMessage("Please enter a number between 1 and 100.");
+      setShowFeedbackCard(true);
       return;
     }
 
@@ -55,10 +58,8 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
     } else {
       if (attemptsLeft > 1) {
         setAttemptsLeft((prev) => prev - 1);
-        Alert.alert(
-          "Incorrect guess",
-          guess > chosenNumber ? "You should guess lower." : "You should guess higher."
-        );
+        setFeedbackMessage(guess > chosenNumber ? "You should guess lower." : "You should guess higher.");
+        setShowFeedbackCard(true);
       } else {
         handleGameOver("You ran out of attempts! Game over.");
       }
@@ -75,6 +76,7 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
     setGameResultMessage(message);
     setGameOver(true);
     setIsGameStarted(false);
+    setShowFeedbackCard(false);
   }
 
   function useHint() {
@@ -97,7 +99,7 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
 
   function handleNewGame() {
     setChosenNumber(generateNumber(lastDigit));
-    setGameOver(false);
+    setGameOver(false); // Reset game over state
     setIsGameStarted(false);
     setTimer(60);
     setAttemptsLeft(4);
@@ -105,6 +107,11 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
     setHintUsed(false);
     setHintMessage("");
     setImageUrl("");
+  }
+
+  function handleTryAgain() {
+    setShowFeedbackCard(false);
+    setUserGuess("");
   }
 
   return (
@@ -119,31 +126,10 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
           color="blue"
           style={styles.restartButton}
         />
-        <Card>
-          {!isGameStarted && !gameOver ? (
-            <View>
-              <Text style={styles.title}>Guess a number between 1 & 100 that is multiply of {lastDigit}</Text>
-              <Text style={styles.infoText}>You have 60 seconds and 4 attempts to guess the number.</Text>
-              <CustomButton title="Start Game" onPress={handleStartGame} color="green" />
-            </View>
-          ) : isGameStarted ? (
-            <View>
-              <Text style={styles.title}>Guess a number between 1 & 100 that is multiply of {lastDigit}</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter your guess"
-                keyboardType="numeric"
-                value={userGuess}
-                onChangeText={setUserGuess}
-              />
-              <View style={styles.divider} />
-              <Text style={styles.infoText}>Attempts left: {attemptsLeft}</Text>
-              <Text style={styles.infoText}>Timer: {timer}s</Text>
-              {hintMessage ? <Text style={styles.hintText}>{hintMessage}</Text> : null}
-              <CustomButton title="Use a Hint" onPress={useHint} disabled={hintUsed} color="blue" />
-              <CustomButton title="Submit guess" onPress={handleGuessSubmit} color="blue" />
-            </View>
-          ) : (
+
+        {/* If game is over, display the game over card */}
+        {gameOver ? (
+          <Card>
             <View>
               {gameResultMessage.includes("Congratulations") ? (
                 <View>
@@ -159,8 +145,52 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
               )}
               <CustomButton title="New Game" onPress={handleNewGame} color="blue" />
             </View>
-          )}
-        </Card>
+          </Card>
+        ) : (
+          !showFeedbackCard && (
+            <Card>
+              {!isGameStarted && !gameOver ? (
+                <View>
+                  <Text style={styles.title}>
+                    Guess a number between 1 & 100 that is multiply of {lastDigit}
+                  </Text>
+                  <Text style={styles.infoText}>
+                    You have 60 seconds and 4 attempts to guess the number.
+                  </Text>
+                  <CustomButton title="Start Game" onPress={handleStartGame} color="green" />
+                </View>
+              ) : isGameStarted ? (
+                <View>
+                  <Text style={styles.title}>
+                    Guess a number between 1 & 100 that is multiply of {lastDigit}
+                  </Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter your guess"
+                    keyboardType="numeric"
+                    value={userGuess}
+                    onChangeText={setUserGuess}
+                  />
+                  <View style={styles.divider} />
+                  <Text style={styles.infoText}>Attempts left: {attemptsLeft}</Text>
+                  <Text style={styles.infoText}>Timer: {timer}s</Text>
+                  {hintMessage ? <Text style={styles.hintText}>{hintMessage}</Text> : null}
+                  <CustomButton title="Use a Hint" onPress={useHint} disabled={hintUsed} color="blue" />
+                  <CustomButton title="Submit guess" onPress={handleGuessSubmit} color="blue" />
+                </View>
+              ) : null}
+            </Card>
+          )
+        )}
+
+        {/* Display feedback card when applicable */}
+        {showFeedbackCard && (
+          <View style={styles.feedbackCard}>
+            <Text style={styles.feedbackMessage}>{feedbackMessage}</Text>
+            <CustomButton title="Try Again" onPress={handleTryAgain} color="green" />
+            <CustomButton title="End Game" onPress={() => handleGameOver("You ended the game.")} color="red" />
+          </View>
+        )}
       </View>
     </LinearGradient>
   );
@@ -233,5 +263,20 @@ const styles = StyleSheet.create({
     height: 100,
     marginVertical: 20,
   },
+  feedbackCard: {
+    position: "absolute",
+    top: "50%",
+    backgroundColor: "#d3d3d3",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "80%",
+  },
+  feedbackMessage: {
+    fontSize: 18,
+    color: "purple",
+    marginBottom: 20,
+    textAlign: "center",
+  },
 });
-
