@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
 import Checkbox from "../components/Checkbox";
 import ErrorMessage from "../components/ErrorMessage";
 import CustomButton from "../components/Button";
 
-export default function StartScreen({ onRegister }) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+export default function StartScreen({ onRegister, initialValues = {} }) {
+  const [name, setName] = useState(initialValues.name || "");
+  const [email, setEmail] = useState(initialValues.email || "");
+  const [phone, setPhone] = useState(initialValues.phone || "");
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
   const [nameError, setNameError] = useState(null);
@@ -16,6 +16,12 @@ export default function StartScreen({ onRegister }) {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const phoneRegex = /^\d{9}[2-9]$/;
+
+  useEffect(() => {
+    setName(initialValues.name || "");
+    setEmail(initialValues.email || "");
+    setPhone(initialValues.phone || "");
+  }, [initialValues]);
 
   function validateName(input) {
     if (input.trim().length <= 1 || /\d/.test(input)) {

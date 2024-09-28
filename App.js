@@ -17,6 +17,10 @@ export default function App() {
     setCurrentScreen("confirm");
   }
 
+  function handleEdit() {
+    setCurrentScreen("start");
+  }
+
   function handleRestart() {
     setCurrentScreen("start");
     setUserInfo({ name: "", email: "", phone: "" });
@@ -24,11 +28,12 @@ export default function App() {
 
   let content;
   if (currentScreen === "start") {
-    content = <StartScreen onRegister={handleRegister} />;
+    content = <StartScreen onRegister={handleRegister} initialValues={userInfo} />;
   } else if (currentScreen === "confirm") {
     content = (
       <ConfirmScreen 
         userInfo={userInfo} 
+        onEdit={handleEdit} 
         onGameStart={handleGameStart}
       />
     );
