@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
+import { View, Text, Alert, StyleSheet } from "react-native";
 import Checkbox from "../components/Checkbox";
 import ErrorMessage from "../components/ErrorMessage";
 import CustomButton from "../components/Button";
+import Input from "../components/Input";
 import { LinearGradient } from "expo-linear-gradient";
 import colours from "../helper/Colour";
 
@@ -75,29 +76,24 @@ export default function StartScreen({ onRegister, initialValues = {} }) {
   }
 
   return (
-    <LinearGradient
-      colors={colours.gradient}
-      style={styles.gradientBackground}
-    >
+    <LinearGradient colors={colours.gradient} style={styles.gradientBackground}>
       <View style={styles.container}>
         <Text style={styles.welcomeText}>Welcome</Text>
 
         <View style={styles.card}>
-          <Text style={styles.label}>Name</Text>
-          <TextInput
-            style={styles.input}
+          <Input
+            label="Name"
             value={name}
             onChangeText={(text) => {
               setName(text);
               validateName(text);
             }}
             placeholder="Enter your name"
+            errorMessage={nameError}
           />
-          {nameError && <ErrorMessage message={nameError} />}
 
-          <Text style={styles.label}>Email address</Text>
-          <TextInput
-            style={styles.input}
+          <Input
+            label="Email address"
             value={email}
             onChangeText={(text) => {
               setEmail(text);
@@ -105,12 +101,11 @@ export default function StartScreen({ onRegister, initialValues = {} }) {
             }}
             placeholder="Enter your email"
             keyboardType="email-address"
+            errorMessage={emailError}
           />
-          {emailError && <ErrorMessage message={emailError} />}
 
-          <Text style={styles.label}>Phone Number</Text>
-          <TextInput
-            style={styles.input}
+          <Input
+            label="Phone Number"
             value={phone}
             onChangeText={(text) => {
               setPhone(text);
@@ -118,8 +113,8 @@ export default function StartScreen({ onRegister, initialValues = {} }) {
             }}
             placeholder="Enter your phone"
             keyboardType="numeric"
+            errorMessage={phoneError}
           />
-          {phoneError && <ErrorMessage message={phoneError} />}
 
           <Checkbox
             label="I am not a robot"
@@ -128,7 +123,11 @@ export default function StartScreen({ onRegister, initialValues = {} }) {
           />
 
           <View style={styles.buttonsRow}>
-            <CustomButton title="Reset" onPress={resetForm} color={colours.buttonRed} />
+            <CustomButton
+              title="Reset"
+              onPress={resetForm}
+              color={colours.buttonRed}
+            />
             <CustomButton
               title="Register"
               onPress={handleRegister}
@@ -169,17 +168,6 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 8,
     width: "100%",
-  },
-  label: {
-    fontSize: 16,
-    color: colours.greetingText,
-    marginBottom: 5,
-  },
-  input: {
-    borderBottomWidth: 2,
-    borderBottomColor: colours.inputBorder,
-    padding: 10,
-    marginBottom: 10,
   },
   buttonsRow: {
     flexDirection: "row",

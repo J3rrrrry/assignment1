@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, StyleSheet, Image, Alert } from "react-native";
+import { View, Text, Alert, StyleSheet, Image } from "react-native";
 import CustomButton from "../components/Button";
 import Card from "../components/Card";
+import Input from "../components/Input";
 import { LinearGradient } from "expo-linear-gradient";
 import colours from "../helper/Colour";
 
@@ -129,10 +130,7 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
   }
 
   return (
-    <LinearGradient
-      colors={colours.gradient}
-      style={styles.gradientBackground}
-    >
+    <LinearGradient colors={colours.gradient} style={styles.gradientBackground}>
       <View style={styles.container}>
         <CustomButton
           title="Restart"
@@ -165,7 +163,7 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
               {!isGameStarted && !gameOver ? (
                 <View>
                   <Text style={styles.title}>
-                    Guess a number between 1 & 100 that is multiply of {lastDigit}
+                    Guess a number between 1 & 100 that is a multiple of {lastDigit}
                   </Text>
                   <Text style={styles.infoText}>
                     You have 60 seconds and 4 attempts to guess the number.
@@ -175,15 +173,18 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
               ) : isGameStarted ? (
                 <View>
                   <Text style={styles.title}>
-                    Guess a number between 1 & 100 that is multiply of {lastDigit}
+                    Guess a number between 1 & 100 that is a multiple of {lastDigit}
                   </Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Enter your guess"
-                    keyboardType="numeric"
+
+                  {/* Using the Input component for user guess input */}
+                  <Input
+                    label="Your Guess"
                     value={userGuess}
                     onChangeText={setUserGuess}
+                    placeholder="Enter your guess"
+                    keyboardType="numeric"
                   />
+
                   <View style={styles.divider} />
                   <Text style={styles.infoText}>Attempts left: {attemptsLeft}</Text>
                   <Text style={styles.infoText}>Timer: {timer}s</Text>
@@ -256,14 +257,6 @@ const styles = StyleSheet.create({
     color: colours.greetingText,
     textAlign: "center",
     marginBottom: 20,
-  },
-  input: {
-    borderColor: colours.inputBorder,
-    borderWidth: 1,
-    padding: 10,
-    width: "80%",
-    textAlign: "center",
-    marginBottom: 10,
   },
   successImage: {
     width: 100,
