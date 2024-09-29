@@ -1,3 +1,22 @@
+/**
+ * colours
+ *
+ * An object containing the color palette used throughout the application.
+ *
+ * @property {Array} gradient - Array of gradient colors for background effects.
+ * @property {string} cardBackground - Background color for cards.
+ * @property {string} shadow - Shadow color used in styling.
+ * @property {string} greetingText - Color for greeting text.
+ * @property {string} instructionText - Color for instruction text.
+ * @property {string} userInfoText - Color for user info text.
+ * @property {string} feedbackMessage - Color for feedback messages.
+ * @property {string} dividerColor - Color for dividers.
+ * @property {string} inputBorder - Color for input borders.
+ * @property {string} infoText - Color for informational text.
+ * @property {string} buttonRed - Color for red buttons.
+ * @property {string} buttonBlue - Color for blue buttons.
+ * @property {string} buttonGreen - Color for green buttons.
+ */
 const colours = {
     gradient: [
       "rgba(173, 216, 230, 0.8)", 
@@ -16,7 +35,6 @@ const colours = {
     buttonRed: "red",
     buttonBlue: "blue",
     buttonGreen: "green",
-  };
-  
-  export default colours;
-  
+};
+
+export default colours;

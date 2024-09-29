@@ -4,6 +4,19 @@ import CustomButton from "../components/Button";
 import { LinearGradient } from "expo-linear-gradient";
 import colours from "../helper/Colour";
 
+/**
+ * ConfirmScreen
+ *
+ * A modal screen that shows the user's entered information for confirmation,
+ * with options to edit or proceed.
+ *
+ * @param {boolean} visible - Controls the visibility of the modal.
+ * @param {object} userInfo - Contains user information like name, email, and phone number.
+ * @param {function} onEdit - Callback for when the "Go back" button is pressed.
+ * @param {function} onGameStart - Callback for when the "Continue" button is pressed.
+ *
+ * @returns {JSX.Element} The confirmation modal screen component.
+ */
 export default function ConfirmScreen({
   visible = true,
   userInfo,

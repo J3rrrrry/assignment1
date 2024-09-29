@@ -7,6 +7,17 @@ import Input from "../components/Input";
 import { LinearGradient } from "expo-linear-gradient";
 import colours from "../helper/Colour";
 
+/**
+ * StartScreen
+ *
+ * A screen for user registration that collects the user's name, email, and phone number, 
+ * with form validation and an option to reset the form.
+ *
+ * @param {function} onRegister - Callback for when the user successfully registers.
+ * @param {object} [initialValues={}] - Initial values for the form fields (name, email, phone).
+ *
+ * @returns {JSX.Element} The start screen component.
+ */
 export default function StartScreen({ onRegister, initialValues = {} }) {
   const [name, setName] = useState(initialValues.name || "");
   const [email, setEmail] = useState(initialValues.email || "");

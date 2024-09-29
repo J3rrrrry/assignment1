@@ -6,6 +6,12 @@ import Input from "../components/Input";
 import { LinearGradient } from "expo-linear-gradient";
 import colours from "../helper/Colour";
 
+/**
+ * Generates a random number that is a multiple of the last digit of the phone number.
+ *
+ * @param {number} lastDigit - The last digit of the user's phone number.
+ * @returns {number} A random number that is a multiple of the last digit.
+ */
 function generateNumber(lastDigit) {
   const multiples = [];
   for (let i = lastDigit; i <= 100; i += lastDigit) {
@@ -14,6 +20,18 @@ function generateNumber(lastDigit) {
   return multiples[Math.floor(Math.random() * multiples.length)];
 }
 
+/**
+ * GameScreen
+ *
+ * The main game screen where users guess a number that is a multiple of the last digit of their phone number.
+ * The game includes a timer, limited attempts, hints, and feedback.
+ *
+ * @param {string} phone - The user's phone number used to generate the guessing number.
+ * @param {function} onRestart - Function to handle when the user wants to restart the game.
+ * @param {function} onBackToStart - Function to return to the start screen.
+ *
+ * @returns {JSX.Element} The game screen component.
+ */
 export default function GameScreen({ phone, onRestart, onBackToStart }) {
   const lastDigit = parseInt(phone.slice(-1), 10);
   const [chosenNumber, setChosenNumber] = useState(generateNumber(lastDigit));
@@ -40,10 +58,16 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
     }
   }, [isGameStarted, timer]);
 
+  /**
+   * Handles the restart action, taking the user back to the start screen.
+   */
   function handleRestart() {
     onBackToStart();
   }
 
+  /**
+   * Handles the logic when the user submits a guess.
+   */
   function handleGuessSubmit() {
     if (gameOver) return;
 
@@ -51,13 +75,25 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
 
     if (isNaN(guess)) {
       Alert.alert("Invalid Input", "Please enter a valid number.");
-      setAttemptsLeft((prev) => prev - 1);
+      setAttemptsLeft((prev) => {
+        const newAttempts = prev - 1;
+        if (newAttempts === 0) {
+          handleGameOver("You ran out of attempts! Game over.");
+        }
+        return newAttempts;
+      });
       return;
     }
 
     if (guess < 1 || guess > 100) {
       Alert.alert("Out of Range", "Please enter a number between 1 and 100.");
-      setAttemptsLeft((prev) => prev - 1);
+      setAttemptsLeft((prev) => {
+        const newAttempts = prev - 1;
+        if (newAttempts === 0) {
+          handleGameOver("You ran out of attempts! Game over.");
+        }
+        return newAttempts;
+      });
       return;
     }
 
@@ -66,13 +102,19 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
         "Invalid Guess",
         `Please enter a number that is a multiple of ${lastDigit}.`
       );
-      setAttemptsLeft((prev) => prev - 1);
+      setAttemptsLeft((prev) => {
+        const newAttempts = prev - 1;
+        if (newAttempts === 0) {
+          handleGameOver("You ran out of attempts! Game over.");
+        }
+        return newAttempts;
+      });
       return;
     }
 
     if (guess === chosenNumber) {
       setImageUrl(`https://picsum.photos/id/${chosenNumber}/100/100`);
-      handleVictory(`Congratulations! You guessed the correct number in ${4 - attemptsLeft + 1} attempts.`);
+      handleVictory(`You guessed correct! Attempts used: ${4 - attemptsLeft + 1}`);
     } else {
       if (attemptsLeft > 1) {
         setAttemptsLeft((prev) => prev - 1);
@@ -86,12 +128,22 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
     }
   }
 
+  /**
+   * Handles when the user wins the game.
+   *
+   * @param {string} message - The victory message.
+   */
   function handleVictory(message) {
     setGameResultMessage(message);
     setGameOver(true);
     setIsGameStarted(false);
   }
 
+  /**
+   * Handles when the game is over, either by running out of attempts or time.
+   *
+   * @param {string} message - The game over message.
+   */
   function handleGameOver(message) {
     setGameResultMessage(message);
     setGameOver(true);
@@ -99,6 +151,9 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
     setShowFeedbackCard(false);
   }
 
+  /**
+   * Provides a hint to the user about the range of the number.
+   */
   function useHint() {
     if (!hintUsed) {
       setHintMessage(chosenNumber > 50 ? "The number is greater than 50." : "The number is less than or equal to 50.");
@@ -106,6 +161,9 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
     }
   }
 
+  /**
+   * Starts a new game, resetting the state.
+   */
   function handleStartGame() {
     setIsGameStarted(true);
     setGameOver(false);
@@ -117,6 +175,9 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
     setChosenNumber(generateNumber(lastDigit));
   }
 
+  /**
+   * Resets the game, allowing the user to start over with a new number.
+   */
   function handleNewGame() {
     setChosenNumber(generateNumber(lastDigit));
     setGameOver(false);
@@ -129,6 +190,9 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
     setImageUrl("");
   }
 
+  /**
+   * Allows the user to try guessing again after an incorrect attempt.
+   */
   function handleTryAgain() {
     if (attemptsLeft === 0) {
       handleGameOver("You ran out of attempts! Game over.");
@@ -154,13 +218,13 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
           {gameOver ? (
             <Card>
               <View>
-                {gameResultMessage.includes("Congratulations") ? (
-                  <View>
+                {gameResultMessage.includes("correct") ? (
+                  <View style={styles.imageContainer}>
                     <Text style={styles.gameOverText}>{gameResultMessage}</Text>
                     {imageUrl ? <Image source={{ uri: imageUrl }} style={styles.successImage} /> : null}
                   </View>
                 ) : (
-                  <View>
+                  <View style={styles.imageContainer}>
                     <Text style={styles.gameOverText}>The game is over!</Text>
                     <Image source={require('../assets/sad.png')} style={styles.sadImage} />
                     <Text style={styles.infoText}>{gameResultMessage}</Text>
@@ -285,6 +349,11 @@ const styles = StyleSheet.create({
   sadImage: {
     width: 100,
     height: 100,
+    marginVertical: 20,
+  },
+  imageContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
     marginVertical: 20,
   },
   feedbackCard: {

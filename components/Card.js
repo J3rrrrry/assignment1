@@ -2,6 +2,15 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import colours from '../helper/Colour';
 
+/**
+ * Card
+ *
+ * A reusable container component that wraps its children with a styled card layout.
+ *
+ * @param {React.ReactNode} children - The content to be wrapped inside the card.
+ *
+ * @returns {JSX.Element} The styled card component.
+ */
 const Card = ({ children }) => {
   return <View style={styles.cardContainer}>{children}</View>;
 };
