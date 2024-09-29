@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import colours from '../helper/Colour';
 
 const Card = ({ children }) => {
   return <View style={styles.cardContainer}>{children}</View>;
@@ -7,11 +8,11 @@ const Card = ({ children }) => {
 
 const styles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: "#d3d3d3",
+    backgroundColor: colours.cardBackground,
     paddingVertical: 30,
     paddingHorizontal: 20,
     borderRadius: 10,
-    shadowColor: "#000",
+    shadowColor: colours.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 6,
