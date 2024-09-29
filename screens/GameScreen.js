@@ -3,6 +3,7 @@ import { View, Text, TextInput, StyleSheet, Image, Alert } from "react-native";
 import CustomButton from "../components/Button";
 import Card from "../components/Card";
 import { LinearGradient } from "expo-linear-gradient";
+import colours from "../helper/Colour";
 
 function generateNumber(lastDigit) {
   const multiples = [];
@@ -47,19 +48,16 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
 
     const guess = parseInt(userGuess, 10);
     
-    // Check if input is a valid number
     if (isNaN(guess)) {
       Alert.alert("Invalid Input", "Please enter a valid number.");
       return;
     }
 
-    // Check if the guess is within the valid range (1-100)
     if (guess < 1 || guess > 100) {
       Alert.alert("Out of Range", "Please enter a number between 1 and 100.");
       return;
     }
 
-    // Check if the guess is a multiple of the last digit of the phone number
     if (guess % lastDigit !== 0) {
       Alert.alert(
         "Invalid Guess",
@@ -132,14 +130,14 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
 
   return (
     <LinearGradient
-      colors={["rgba(173, 216, 230, 0.8)", "rgba(135, 206, 250, 0.8)", "rgba(0, 191, 255, 0.8)"]}
+      colors={colours.gradient}
       style={styles.gradientBackground}
     >
       <View style={styles.container}>
         <CustomButton
           title="Restart"
           onPress={handleRestart}
-          color="blue"
+          color={colours.buttonBlue}
           style={styles.restartButton}
         />
 
@@ -158,7 +156,7 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
                   <Text style={styles.infoText}>{gameResultMessage}</Text>
                 </View>
               )}
-              <CustomButton title="New Game" onPress={handleNewGame} color="blue" />
+              <CustomButton title="New Game" onPress={handleNewGame} color={colours.buttonBlue} />
             </View>
           </Card>
         ) : (
@@ -172,7 +170,7 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
                   <Text style={styles.infoText}>
                     You have 60 seconds and 4 attempts to guess the number.
                   </Text>
-                  <CustomButton title="Start Game" onPress={handleStartGame} color="green" />
+                  <CustomButton title="Start Game" onPress={handleStartGame} color={colours.buttonGreen} />
                 </View>
               ) : isGameStarted ? (
                 <View>
@@ -190,8 +188,8 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
                   <Text style={styles.infoText}>Attempts left: {attemptsLeft}</Text>
                   <Text style={styles.infoText}>Timer: {timer}s</Text>
                   {hintMessage ? <Text style={styles.hintText}>{hintMessage}</Text> : null}
-                  <CustomButton title="Use a Hint" onPress={useHint} disabled={hintUsed} color="blue" />
-                  <CustomButton title="Submit guess" onPress={handleGuessSubmit} color="blue" />
+                  <CustomButton title="Use a Hint" onPress={useHint} disabled={hintUsed} color={colours.buttonBlue} />
+                  <CustomButton title="Submit guess" onPress={handleGuessSubmit} color={colours.buttonBlue} />
                 </View>
               ) : null}
             </Card>
@@ -201,8 +199,8 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
         {showFeedbackCard && (
           <View style={styles.feedbackCard}>
             <Text style={styles.feedbackMessage}>{feedbackMessage}</Text>
-            <CustomButton title="Try Again" onPress={handleTryAgain} color="green" />
-            <CustomButton title="End Game" onPress={() => handleGameOver("You ended the game.")} color="red" />
+            <CustomButton title="Try Again" onPress={handleTryAgain} color={colours.buttonGreen} />
+            <CustomButton title="End Game" onPress={() => handleGameOver("You ended the game.")} color={colours.buttonRed} />
           </View>
         )}
       </View>
@@ -231,36 +229,36 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    color: "purple",
+    color: colours.greetingText,
     textAlign: "center",
     marginBottom: 20,
   },
   divider: {
     width: "80%",
     height: 1,
-    backgroundColor: "purple",
+    backgroundColor: colours.dividerColor,
     marginVertical: 10,
   },
   infoText: {
     fontSize: 16,
-    color: "black",
+    color: colours.infoText,
     textAlign: "center",
     marginBottom: 10,
   },
   hintText: {
     fontSize: 16,
-    color: "purple",
+    color: colours.greetingText,
     textAlign: "center",
     marginBottom: 20,
   },
   gameOverText: {
     fontSize: 22,
-    color: "purple",
+    color: colours.greetingText,
     textAlign: "center",
     marginBottom: 20,
   },
   input: {
-    borderColor: "gray",
+    borderColor: colours.inputBorder,
     borderWidth: 1,
     padding: 10,
     width: "80%",
@@ -280,7 +278,7 @@ const styles = StyleSheet.create({
   feedbackCard: {
     position: "absolute",
     top: "50%",
-    backgroundColor: "#d3d3d3",
+    backgroundColor: colours.cardBackground,
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
@@ -289,7 +287,7 @@ const styles = StyleSheet.create({
   },
   feedbackMessage: {
     fontSize: 18,
-    color: "purple",
+    color: colours.feedbackMessage,
     marginBottom: 20,
     textAlign: "center",
   },

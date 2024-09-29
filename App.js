@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { StyleSheet, SafeAreaView} from "react-native";
 import StartScreen from "./screens/StartScreen";
 import ConfirmScreen from "./screens/ConfirmScreen";
 import GameScreen from "./screens/GameScreen";
