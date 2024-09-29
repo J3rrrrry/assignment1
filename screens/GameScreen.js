@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, StyleSheet, Image } from "react-native";
+import { View, Text, TextInput, StyleSheet, Image, Alert } from "react-native";
 import CustomButton from "../components/Button";
 import Card from "../components/Card";
 import { LinearGradient } from "expo-linear-gradient";
@@ -21,7 +21,7 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
   const [userGuess, setUserGuess] = useState("");
   const [hintUsed, setHintUsed] = useState(false);
   const [hintMessage, setHintMessage] = useState("");
-  const [gameOver, setGameOver] = useState(false); // Track game over state
+  const [gameOver, setGameOver] = useState(false);
   const [gameResultMessage, setGameResultMessage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [feedbackMessage, setFeedbackMessage] = useState("");
@@ -46,9 +46,25 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
     if (gameOver) return;
 
     const guess = parseInt(userGuess, 10);
-    if (isNaN(guess) || guess < 1 || guess > 100) {
-      setFeedbackMessage("Please enter a number between 1 and 100.");
-      setShowFeedbackCard(true);
+    
+    // Check if input is a valid number
+    if (isNaN(guess)) {
+      Alert.alert("Invalid Input", "Please enter a valid number.");
+      return;
+    }
+
+    // Check if the guess is within the valid range (1-100)
+    if (guess < 1 || guess > 100) {
+      Alert.alert("Out of Range", "Please enter a number between 1 and 100.");
+      return;
+    }
+
+    // Check if the guess is a multiple of the last digit of the phone number
+    if (guess % lastDigit !== 0) {
+      Alert.alert(
+        "Invalid Guess",
+        `Please enter a number that is a multiple of ${lastDigit}.`
+      );
       return;
     }
 
@@ -99,7 +115,7 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
 
   function handleNewGame() {
     setChosenNumber(generateNumber(lastDigit));
-    setGameOver(false); // Reset game over state
+    setGameOver(false);
     setIsGameStarted(false);
     setTimer(60);
     setAttemptsLeft(4);
@@ -127,7 +143,6 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
           style={styles.restartButton}
         />
 
-        {/* If game is over, display the game over card */}
         {gameOver ? (
           <Card>
             <View>
@@ -183,7 +198,6 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
           )
         )}
 
-        {/* Display feedback card when applicable */}
         {showFeedbackCard && (
           <View style={styles.feedbackCard}>
             <Text style={styles.feedbackMessage}>{feedbackMessage}</Text>
