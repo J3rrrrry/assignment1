@@ -141,77 +141,81 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
   return (
     <LinearGradient colors={colours.gradient} style={styles.gradientBackground}>
       <View style={styles.container}>
-        <CustomButton
-          title="Restart"
-          onPress={handleRestart}
-          color={colours.buttonBlue}
-          style={styles.restartButton}
-        />
+        <View style={styles.restartButtonContainer}>
+          <CustomButton
+            title="Restart"
+            onPress={handleRestart}
+            color={colours.buttonBlue}
+            style={styles.restartButton}
+          />
+        </View>
 
-        {gameOver ? (
-          <Card>
-            <View>
-              {gameResultMessage.includes("Congratulations") ? (
-                <View>
-                  <Text style={styles.gameOverText}>{gameResultMessage}</Text>
-                  {imageUrl ? <Image source={{ uri: imageUrl }} style={styles.successImage} /> : null}
-                </View>
-              ) : (
-                <View>
-                  <Text style={styles.gameOverText}>The game is over!</Text>
-                  <Image source={require('../assets/sad.png')} style={styles.sadImage} />
-                  <Text style={styles.infoText}>{gameResultMessage}</Text>
-                </View>
-              )}
-              <CustomButton title="New Game" onPress={handleNewGame} color={colours.buttonBlue} />
-            </View>
-          </Card>
-        ) : (
-          !showFeedbackCard && (
+        <View style={styles.contentContainer}>
+          {gameOver ? (
             <Card>
-              {!isGameStarted && !gameOver ? (
-                <View>
-                  <Text style={styles.title}>
-                    Guess a number between 1 & 100 that is a multiple of {lastDigit}
-                  </Text>
-                  <Text style={styles.infoText}>
-                    You have 60 seconds and 4 attempts to guess the number.
-                  </Text>
-                  <CustomButton title="Start Game" onPress={handleStartGame} color={colours.buttonGreen} />
-                </View>
-              ) : isGameStarted ? (
-                <View>
-                  <Text style={styles.title}>
-                    Guess a number between 1 & 100 that is a multiple of {lastDigit}
-                  </Text>
-
-                  <Input
-                    label="Your Guess"
-                    value={userGuess}
-                    onChangeText={setUserGuess}
-                    placeholder="Enter your guess"
-                    keyboardType="numeric"
-                  />
-
-                  <View style={styles.divider} />
-                  <Text style={styles.infoText}>Attempts left: {attemptsLeft}</Text>
-                  <Text style={styles.infoText}>Timer: {timer}s</Text>
-                  {hintMessage ? <Text style={styles.hintText}>{hintMessage}</Text> : null}
-                  <CustomButton title="Use a Hint" onPress={useHint} disabled={hintUsed} color={colours.buttonBlue} />
-                  <CustomButton title="Submit guess" onPress={handleGuessSubmit} color={colours.buttonBlue} />
-                </View>
-              ) : null}
+              <View>
+                {gameResultMessage.includes("Congratulations") ? (
+                  <View>
+                    <Text style={styles.gameOverText}>{gameResultMessage}</Text>
+                    {imageUrl ? <Image source={{ uri: imageUrl }} style={styles.successImage} /> : null}
+                  </View>
+                ) : (
+                  <View>
+                    <Text style={styles.gameOverText}>The game is over!</Text>
+                    <Image source={require('../assets/sad.png')} style={styles.sadImage} />
+                    <Text style={styles.infoText}>{gameResultMessage}</Text>
+                  </View>
+                )}
+                <CustomButton title="New Game" onPress={handleNewGame} color={colours.buttonBlue} />
+              </View>
             </Card>
-          )
-        )}
+          ) : (
+            !showFeedbackCard && (
+              <Card>
+                {!isGameStarted && !gameOver ? (
+                  <View>
+                    <Text style={styles.title}>
+                      Guess a number between 1 & 100 that is a multiple of {lastDigit}
+                    </Text>
+                    <Text style={styles.infoText}>
+                      You have 60 seconds and 4 attempts to guess the number.
+                    </Text>
+                    <CustomButton title="Start Game" onPress={handleStartGame} color={colours.buttonGreen} />
+                  </View>
+                ) : isGameStarted ? (
+                  <View>
+                    <Text style={styles.title}>
+                      Guess a number between 1 & 100 that is a multiple of {lastDigit}
+                    </Text>
 
-        {showFeedbackCard && (
-          <View style={styles.feedbackCard}>
-            <Text style={styles.feedbackMessage}>{feedbackMessage}</Text>
-            <CustomButton title="Try Again" onPress={handleTryAgain} color={colours.buttonGreen} />
-            <CustomButton title="End Game" onPress={() => handleGameOver("You ended the game.")} color={colours.buttonRed} />
-          </View>
-        )}
+                    <Input
+                      label="Your Guess"
+                      value={userGuess}
+                      onChangeText={setUserGuess}
+                      placeholder="Enter your guess"
+                      keyboardType="numeric"
+                    />
+
+                    <View style={styles.divider} />
+                    <Text style={styles.infoText}>Attempts left: {attemptsLeft}</Text>
+                    <Text style={styles.infoText}>Timer: {timer}s</Text>
+                    {hintMessage ? <Text style={styles.hintText}>{hintMessage}</Text> : null}
+                    <CustomButton title="Use a Hint" onPress={useHint} disabled={hintUsed} color={colours.buttonBlue} />
+                    <CustomButton title="Submit guess" onPress={handleGuessSubmit} color={colours.buttonBlue} />
+                  </View>
+                ) : null}
+              </Card>
+            )
+          )}
+
+          {showFeedbackCard && (
+            <View style={styles.feedbackCard}>
+              <Text style={styles.feedbackMessage}>{feedbackMessage}</Text>
+              <CustomButton title="Try Again" onPress={handleTryAgain} color={colours.buttonGreen} />
+              <CustomButton title="End Game" onPress={() => handleGameOver("You ended the game.")} color={colours.buttonRed} />
+            </View>
+          )}
+        </View>
       </View>
     </LinearGradient>
   );
@@ -229,12 +233,19 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "relative",
   },
-  restartButton: {
-    position: "absolute",
-    top: 40,
-    right: 20,
-    zIndex: 10,
+  restartButtonContainer: {
+    width: '100%',
+    alignItems: 'flex-end',
     padding: 10,
+  },
+  restartButton: {
+    padding: 10,
+  },
+  contentContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
   },
   title: {
     fontSize: 20,
