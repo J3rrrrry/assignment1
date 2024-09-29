@@ -76,7 +76,9 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
         setFeedbackMessage(guess > chosenNumber ? "You should guess lower." : "You should guess higher.");
         setShowFeedbackCard(true);
       } else {
-        handleGameOver("You ran out of attempts! Game over.");
+        setFeedbackMessage(guess > chosenNumber ? "You should guess lower." : "You should guess higher.");
+        setShowFeedbackCard(true);
+        setAttemptsLeft(0);
       }
     }
   }
@@ -125,8 +127,12 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
   }
 
   function handleTryAgain() {
-    setShowFeedbackCard(false);
-    setUserGuess("");
+    if (attemptsLeft === 0) {
+      handleGameOver("You ran out of attempts! Game over.");
+    } else {
+      setShowFeedbackCard(false);
+      setUserGuess("");
+    }
   }
 
   return (
@@ -176,7 +182,6 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
                     Guess a number between 1 & 100 that is a multiple of {lastDigit}
                   </Text>
 
-                  {/* Using the Input component for user guess input */}
                   <Input
                     label="Your Guess"
                     value={userGuess}
