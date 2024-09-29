@@ -48,14 +48,16 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
     if (gameOver) return;
 
     const guess = parseInt(userGuess, 10);
-    
+
     if (isNaN(guess)) {
       Alert.alert("Invalid Input", "Please enter a valid number.");
+      setAttemptsLeft((prev) => prev - 1);
       return;
     }
 
     if (guess < 1 || guess > 100) {
       Alert.alert("Out of Range", "Please enter a number between 1 and 100.");
+      setAttemptsLeft((prev) => prev - 1);
       return;
     }
 
@@ -64,6 +66,7 @@ export default function GameScreen({ phone, onRestart, onBackToStart }) {
         "Invalid Guess",
         `Please enter a number that is a multiple of ${lastDigit}.`
       );
+      setAttemptsLeft((prev) => prev - 1);
       return;
     }
 
