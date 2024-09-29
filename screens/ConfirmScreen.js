@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Modal, StyleSheet, SafeAreaView } from "react-native";
 import CustomButton from "../components/Button";
 import { LinearGradient } from "expo-linear-gradient";
+import colours from "../helper/Colour";
 
 export default function ConfirmScreen({
   visible = true,
@@ -12,7 +13,7 @@ export default function ConfirmScreen({
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
       <LinearGradient
-        colors={["rgba(173, 216, 230, 0.8)", "rgba(135, 206, 250, 0.8)", "rgba(0, 191, 255, 0.8)"]}
+        colors={colours.gradient}
         style={styles.gradientBackground}
       >
         <SafeAreaView style={styles.modalContainer}>
@@ -31,7 +32,7 @@ export default function ConfirmScreen({
             </Text>
 
             <View style={styles.buttonsRow}>
-              <CustomButton title="Go back" onPress={onEdit} color="red" />
+              <CustomButton title="Go back" onPress={onEdit} color={colours.buttonRed} />
               <CustomButton
                 title="Continue"
                 onPress={() => {
@@ -39,7 +40,7 @@ export default function ConfirmScreen({
                     onGameStart();
                   }
                 }}
-                color="blue"
+                color={colours.buttonBlue}
               />
             </View>
           </View>
@@ -61,10 +62,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   card: {
-    backgroundColor: "#d3d3d3",
+    backgroundColor: colours.cardBackground,
     padding: 20,
     borderRadius: 10,
-    shadowColor: "#000",
+    shadowColor: colours.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 6,
@@ -77,18 +78,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "purple",
+    color: colours.greetingText,
     textAlign: "center",
   },
   instructionText: {
     fontSize: 16,
-    color: "purple",
+    color: colours.instructionText, 
     marginBottom: 10,
     textAlign: "center",
   },
   userInfoText: {
     fontSize: 16,
-    color: "blue",
+    color: colours.userInfoText,
     marginBottom: 5,
     textAlign: "center",
   },
