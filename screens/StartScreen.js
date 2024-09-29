@@ -3,6 +3,8 @@ import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
 import Checkbox from "../components/Checkbox";
 import ErrorMessage from "../components/ErrorMessage";
 import CustomButton from "../components/Button";
+import { LinearGradient } from "expo-linear-gradient";
+import colours from "../helper/Colour";
 
 export default function StartScreen({ onRegister, initialValues = {} }) {
   const [name, setName] = useState(initialValues.name || "");
@@ -73,75 +75,83 @@ export default function StartScreen({ onRegister, initialValues = {} }) {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.welcomeText}>Welcome</Text>
+    <LinearGradient
+      colors={colours.gradient}
+      style={styles.gradientBackground}
+    >
+      <View style={styles.container}>
+        <Text style={styles.welcomeText}>Welcome</Text>
 
-      <View style={styles.card}>
-        <Text style={styles.label}>Name</Text>
-        <TextInput
-          style={styles.input}
-          value={name}
-          onChangeText={(text) => {
-            setName(text);
-            validateName(text);
-          }}
-          placeholder="Enter your name"
-        />
-        {nameError && <ErrorMessage message={nameError} />}
-
-        <Text style={styles.label}>Email address</Text>
-        <TextInput
-          style={styles.input}
-          value={email}
-          onChangeText={(text) => {
-            setEmail(text);
-            validateEmail(text);
-          }}
-          placeholder="Enter your email"
-          keyboardType="email-address"
-        />
-        {emailError && <ErrorMessage message={emailError} />}
-
-        <Text style={styles.label}>Phone Number</Text>
-        <TextInput
-          style={styles.input}
-          value={phone}
-          onChangeText={(text) => {
-            setPhone(text);
-            validatePhone(text);
-          }}
-          placeholder="Enter your phone"
-          keyboardType="numeric"
-        />
-        {phoneError && <ErrorMessage message={phoneError} />}
-
-        <Checkbox
-          label="I am not a robot"
-          isChecked={isCheckboxChecked}
-          onCheck={() => setIsCheckboxChecked(!isCheckboxChecked)}
-        />
-
-        <View style={styles.buttonsRow}>
-          <CustomButton title="Reset" onPress={resetForm} color="red" />
-          <CustomButton
-            title="Register"
-            onPress={handleRegister}
-            disabled={!isCheckboxChecked}
-            color="blue"
+        <View style={styles.card}>
+          <Text style={styles.label}>Name</Text>
+          <TextInput
+            style={styles.input}
+            value={name}
+            onChangeText={(text) => {
+              setName(text);
+              validateName(text);
+            }}
+            placeholder="Enter your name"
           />
+          {nameError && <ErrorMessage message={nameError} />}
+
+          <Text style={styles.label}>Email address</Text>
+          <TextInput
+            style={styles.input}
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+              validateEmail(text);
+            }}
+            placeholder="Enter your email"
+            keyboardType="email-address"
+          />
+          {emailError && <ErrorMessage message={emailError} />}
+
+          <Text style={styles.label}>Phone Number</Text>
+          <TextInput
+            style={styles.input}
+            value={phone}
+            onChangeText={(text) => {
+              setPhone(text);
+              validatePhone(text);
+            }}
+            placeholder="Enter your phone"
+            keyboardType="numeric"
+          />
+          {phoneError && <ErrorMessage message={phoneError} />}
+
+          <Checkbox
+            label="I am not a robot"
+            isChecked={isCheckboxChecked}
+            onCheck={() => setIsCheckboxChecked(!isCheckboxChecked)}
+          />
+
+          <View style={styles.buttonsRow}>
+            <CustomButton title="Reset" onPress={resetForm} color={colours.buttonRed} />
+            <CustomButton
+              title="Register"
+              onPress={handleRegister}
+              disabled={!isCheckboxChecked}
+              color={colours.buttonBlue}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
+  gradientBackground: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#add8e6",
+    width: "100%",
   },
   welcomeText: {
     fontSize: 30,
@@ -150,10 +160,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   card: {
-    backgroundColor: "#d3d3d3",
+    backgroundColor: colours.cardBackground,
     padding: 20,
     borderRadius: 10,
-    shadowColor: "#000",
+    shadowColor: colours.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 6,
@@ -162,12 +172,12 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    color: "purple",
+    color: colours.greetingText,
     marginBottom: 5,
   },
   input: {
     borderBottomWidth: 2,
-    borderBottomColor: "purple",
+    borderBottomColor: colours.inputBorder,
     padding: 10,
     marginBottom: 10,
   },
